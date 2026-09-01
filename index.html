@@ -175,8 +175,29 @@
         <!-- Blok kartları JS ilə buraya əlavə olunacaq -->
       </div>
 
-      <p id="no-blocks-msg" class="empty-msg hidden">Heç bir blok yaradılmayıb.</p>
+    <p id="no-blocks-msg" class="empty-msg hidden">Hələ heç bir blok yaratmamısan.</p>
     </section>
+
+    <div id="block-modal-overlay" class="modal-overlay hidden">
+      <div class="modal-box">
+        <button id="close-block-modal-btn" class="modal-close-btn">✕</button>
+        <h3 id="block-modal-title"></h3>
+
+        <div class="calendar-nav">
+          <button id="block-prev-month-btn">←</button>
+          <span id="block-calendar-month-label"></span>
+          <button id="block-next-month-btn">→</button>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>B.e</span><span>Ç.a</span><span>Ç</span><span>C.a</span><span>C</span><span>Ş</span><span>B</span>
+        </div>
+
+        <div id="block-calendar-grid" class="calendar-grid"></div>
+
+        <p id="block-modal-total"></p>
+      </div>
+    </div>
 
   </main>
 

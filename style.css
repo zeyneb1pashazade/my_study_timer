@@ -614,3 +614,56 @@ body.timer-fullscreen-mode #fullscreen-btn:hover {
   border-bottom: none;
 }
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(107, 85, 104, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-box {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(150, 100, 140, 0.3);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #b39cad;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  color: #c94f7f;
+}
+
+#block-modal-title {
+  font-family: 'Baloo 2', sans-serif;
+  color: #a06bc7;
+  text-align: center;
+  margin-bottom: 16px;
+  padding-right: 20px;
+}
+
+#block-modal-total {
+  text-align: center;
+  margin-top: 14px;
+  font-weight: 700;
+  color: #b57ec9;
+}
+

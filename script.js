@@ -427,6 +427,14 @@ function renderBlocks() {
       }
     });
   });
+
+  document.querySelectorAll('.block-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.querySelector('.block-delete-btn').dataset.id;
+      const block = getBlocks().find(b => b.id === id);
+      if (block) openBlockModal(block);
+    });
+  });
 }
 
 function escapeHtml(str) {
@@ -673,3 +681,97 @@ nextWeekBtn.addEventListener('click', () => {
 document.querySelector('[data-tab="weekly"]').addEventListener('click', renderWeeklyTable);
 
 renderWeeklyTable();
+
+// ==== BLOK DETALI (AYLIQ TƏQVİM) ====
+
+let activeBlockId = null;
+let blockModalViewDate = new Date();
+
+const blockModalOverlay = document.getElementById('block-modal-overlay');
+const blockModalTitle = document.getElementById('block-modal-title');
+const blockModalTotal = document.getElementById('block-modal-total');
+const closeBlockModalBtn = document.getElementById('close-block-modal-btn');
+const blockCalendarGrid = document.getElementById('block-calendar-grid');
+const blockCalendarMonthLabel = document.getElementById('block-calendar-month-label');
+const blockPrevMonthBtn = document.getElementById('block-prev-month-btn');
+const blockNextMonthBtn = document.getElementById('block-next-month-btn');
+
+function openBlockModal(block) {
+  activeBlockId = block.id;
+  blockModalViewDate = new Date();
+  blockModalTitle.textContent = block.name;
+  blockModalOverlay.classList.remove('hidden');
+  renderBlockModalCalendar();
+}
+
+function closeBlockModal() {
+  blockModalOverlay.classList.add('hidden');
+  activeBlockId = null;
+}
+
+closeBlockModalBtn.addEventListener('click', closeBlockModal);
+blockModalOverlay.addEventListener('click', (e) => {
+  if (e.target === blockModalOverlay) closeBlockModal();
+});
+
+function renderBlockModalCalendar() {
+  if (!activeBlockId) return;
+
+  const year = blockModalViewDate.getFullYear();
+  const month = blockModalViewDate.getMonth();
+
+  blockCalendarMonthLabel.textContent = `${azMonthNames[month]} ${year}`;
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  let startWeekday = firstDayOfMonth.getDay() - 1;
+  if (startWeekday < 0) startWeekday = 6;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const todayKey = toDateKey(new Date());
+
+  // Yalnız bu bloka aid sessiyalardan gün->dəqiqə xəritəsi
+  const sessions = getSessions().filter(s => s.blockId === activeBlockId);
+  const minutesByDate = {};
+  sessions.forEach(s => {
+    minutesByDate[s.date] = (minutesByDate[s.date] || 0) + s.minutes;
+  });
+
+  blockCalendarGrid.innerHTML = '';
+
+  for (let i = 0; i < startWeekday; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'calendar-day empty';
+    blockCalendarGrid.appendChild(empty);
+  }
+
+  let monthTotal = 0;
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateObj = new Date(year, month, day);
+    const dateKey = toDateKey(dateObj);
+    const minutes = minutesByDate[dateKey] || 0;
+    monthTotal += minutes;
+
+    const cell = document.createElement('div');
+    cell.className = 'calendar-day';
+    if (dateKey === todayKey) cell.classList.add('today');
+
+    cell.innerHTML = `
+      <span class="day-number">${day}</span>
+      <span class="day-minutes ${minutes === 0 ? 'empty-day' : ''}">${minutes > 0 ? formatMinutesAsHours(minutes) : '-'}</span>
+    `;
+    blockCalendarGrid.appendChild(cell);
+  }
+
+  blockModalTotal.textContent = `Bu ay cəmi: ${formatMinutesAsHours(monthTotal)}`;
+}
+
+blockPrevMonthBtn.addEventListener('click', () => {
+  blockModalViewDate.setMonth(blockModalViewDate.getMonth() - 1);
+  renderBlockModalCalendar();
+});
+
+blockNextMonthBtn.addEventListener('click', () => {
+  blockModalViewDate.setMonth(blockModalViewDate.getMonth() + 1);
+  renderBlockModalCalendar();
+});
