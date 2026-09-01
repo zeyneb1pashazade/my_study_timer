@@ -28,6 +28,7 @@ const modeButtons = document.querySelectorAll('.mode-btn');
 const countdownInputWrap = document.getElementById('countdown-input-wrap');
 const targetMinutesInput = document.getElementById('target-minutes');
 const subjectInput = document.getElementById('subject-input');
+const blockSelect = document.getElementById('block-select');
 const noteInput = document.getElementById('note-input');
 const timerDisplay = document.getElementById('timer-display');
 const startBtn = document.getElementById('start-btn');
@@ -99,6 +100,7 @@ startBtn.addEventListener('click', () => {
   subjectInput.disabled = true;
   noteInput.disabled = true;
   targetMinutesInput.disabled = true;
+  blockSelect.disabled = true;
   savedMsg.classList.add('hidden');
 
   timerInterval = setInterval(() => {
@@ -203,6 +205,7 @@ function finishSession(reachedTarget) {
   subjectInput.disabled = false;
   noteInput.disabled = false;
   targetMinutesInput.disabled = false;
+  blockSelect.disabled = false;
   updateDisplay();
 }
 
@@ -213,7 +216,7 @@ function saveSession(minutes) {
   sessions.push({
     date: today,
     subject: subjectInput.value.trim(),
-    blockId: null,
+    blockId: blockSelect.value || null,
     note: noteInput.value.trim(),
     minutes: minutes
   });
@@ -222,6 +225,7 @@ function saveSession(minutes) {
 
   subjectInput.value = '';
   noteInput.value = '';
+  blockSelect.value = '';
 }
 
 function playChime(type) {
@@ -318,21 +322,17 @@ document.addEventListener('fullscreenchange', () => {
   }
 });
 
-// Timer başlayanda: motivasiya lentini göstər, wake lock al, tam ekran düyməsini göstər
-const originalStartHandler = startBtn.onclick;
 startBtn.addEventListener('click', () => {
-  if (!subjectInput.value.trim()) return; // eyni yoxlama, boşdursa heç nə etmə
+  if (!subjectInput.value.trim()) return;
   motivationBanner.classList.remove('hidden');
   fullscreenBtn.classList.remove('hidden');
   showRandomMotivation();
   requestWakeLock();
 
-  // motivasiya mətnini hər 12 saniyədən bir dəyiş
   clearInterval(window._motivationInterval);
   window._motivationInterval = setInterval(showRandomMotivation, 12000);
 });
 
-// Fasilə/Dayandır/Sessiya bitəndə: lenti gizlət, wake lock buraxsın, tam ekrandan çıx
 function exitFullscreenAndCleanup() {
   motivationBanner.classList.add('hidden');
   fullscreenBtn.classList.add('hidden');
@@ -352,7 +352,6 @@ stopBtn.addEventListener('click', () => {
   exitFullscreenAndCleanup();
 });
 
-// finishSession avtomatik (hədəfə çatanda) da çağırılır — ora da body-fullscreen təmizləməsini bağlayaq
 const originalFinishSession = finishSession;
 finishSession = function(reachedTarget) {
   originalFinishSession(reachedTarget);
@@ -416,7 +415,6 @@ function renderBlocks() {
     blocksList.appendChild(card);
   });
 
-  // Silmə düymələri
   document.querySelectorAll('.block-delete-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -425,7 +423,7 @@ function renderBlocks() {
         const updated = getBlocks().filter(b => b.id !== id);
         saveBlocks(updated);
         renderBlocks();
-        refreshBlockDropdown(); // Mərhələ 5-də əlavə olunacaq funksiya üçün hazırlıq
+        refreshBlockDropdown();
       }
     });
   });
@@ -458,17 +456,116 @@ addBlockBtn.addEventListener('click', () => {
   refreshBlockDropdown();
 });
 
-// Enter düyməsi ilə də əlavə etmək mümkün olsun
 newBlockNameInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') {
     addBlockBtn.click();
   }
 });
 
-// Bloklar tab-ı açılanda siyahını yenilə
 document.querySelector('[data-tab="blocks"]').addEventListener('click', renderBlocks);
 
-// Sadə boş funksiya — Mərhələ 5-də real məzmunla dolduracağıq
-function refreshBlockDropdown() {}
+function refreshBlockDropdown() {
+  const blocks = getBlocks();
+  const currentValue = blockSelect.value;
+
+  blockSelect.innerHTML = '<option value="">— Blok seçilməyib —</option>';
+  blocks.forEach(block => {
+    const opt = document.createElement('option');
+    opt.value = block.id;
+    opt.textContent = block.name;
+    blockSelect.appendChild(opt);
+  });
+
+  if ([...blockSelect.options].some(o => o.value === currentValue)) {
+    blockSelect.value = currentValue;
+  }
+}
 
 renderBlocks();
+refreshBlockDropdown();
+
+// ==== AYLIQ TƏQVİM ====
+
+let calendarViewDate = new Date(); // hansı ayın göstərildiyini saxlayır
+
+const calendarGrid = document.getElementById('calendar-grid');
+const calendarMonthLabel = document.getElementById('calendar-month-label');
+const prevMonthBtn = document.getElementById('prev-month-btn');
+const nextMonthBtn = document.getElementById('next-month-btn');
+
+const azMonthNames = [
+  'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'İyun',
+  'İyul', 'Avqust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'
+];
+
+function toDateKey(date) {
+  const y = date.getFullYear();
+  const m = (date.getMonth() + 1).toString().padStart(2, '0');
+  const d = date.getDate().toString().padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function getMinutesByDate() {
+  const sessions = getSessions();
+  const map = {};
+  sessions.forEach(s => {
+    map[s.date] = (map[s.date] || 0) + s.minutes;
+  });
+  return map;
+}
+
+function renderCalendar() {
+  const year = calendarViewDate.getFullYear();
+  const month = calendarViewDate.getMonth(); // 0-11
+
+  calendarMonthLabel.textContent = `${azMonthNames[month]} ${year}`;
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  // JS-də Bazar (Sunday) = 0. Bizə Bazar ertəsi = 0 lazımdır.
+  let startWeekday = firstDayOfMonth.getDay() - 1;
+  if (startWeekday < 0) startWeekday = 6;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const minutesByDate = getMinutesByDate();
+  const todayKey = toDateKey(new Date());
+
+  calendarGrid.innerHTML = '';
+
+  // Aya qədər boş xanalar
+  for (let i = 0; i < startWeekday; i++) {
+    const empty = document.createElement('div');
+    empty.className = 'calendar-day empty';
+    calendarGrid.appendChild(empty);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateObj = new Date(year, month, day);
+    const dateKey = toDateKey(dateObj);
+    const minutes = minutesByDate[dateKey] || 0;
+
+    const cell = document.createElement('div');
+    cell.className = 'calendar-day';
+    if (dateKey === todayKey) cell.classList.add('today');
+
+    cell.innerHTML = `
+      <span class="day-number">${day}</span>
+      <span class="day-minutes ${minutes === 0 ? 'empty-day' : ''}">${minutes > 0 ? formatMinutesAsHours(minutes) : '-'}</span>
+    `;
+    calendarGrid.appendChild(cell);
+  }
+}
+
+prevMonthBtn.addEventListener('click', () => {
+  calendarViewDate.setMonth(calendarViewDate.getMonth() - 1);
+  renderCalendar();
+});
+
+nextMonthBtn.addEventListener('click', () => {
+  calendarViewDate.setMonth(calendarViewDate.getMonth() + 1);
+  renderCalendar();
+});
+
+// Təqvim tab-ı açılanda yenilə (yeni sessiyalar əlavə olunmuş ola bilər)
+document.querySelector('[data-tab="calendar"]').addEventListener('click', renderCalendar);
+
+renderCalendar();

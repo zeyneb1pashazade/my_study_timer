@@ -72,6 +72,13 @@
         </div>
 
         <div class="field-row">
+          <label for="block-select">Blok (istəyə bağlı):</label>
+          <select id="block-select">
+            <option value="">— Blok seçilməyib —</option>
+          </select>
+        </div>
+
+        <div class="field-row">
           <label for="subject-input">Mövzu:</label>
           <input type="text" id="subject-input" placeholder="Məs: Riyaziyyat">
         </div>
@@ -121,7 +128,18 @@
 
     <section id="calendar" class="tab-content">
       <h2>Təqvim</h2>
-      <p>Aylıq təqvim buraya gələcək.</p>
+
+      <div class="calendar-nav">
+        <button id="prev-month-btn">←</button>
+        <span id="calendar-month-label"></span>
+        <button id="next-month-btn">→</button>
+      </div>
+
+      <div class="calendar-weekdays">
+        <span>B.e</span><span>Ç.a</span><span>Ç</span><span>C.a</span><span>C</span><span>Ş</span><span>B</span>
+      </div>
+
+      <div id="calendar-grid" class="calendar-grid"></div>
     </section>
 
     <section id="weekly" class="tab-content">
