@@ -252,3 +252,109 @@ function playChime(type) {
 }
 
 updateDisplay();
+
+// ==== TAM EKRAN + WAKE LOCK + MOTİVASİYA LENTİ ====
+
+const motivationBanner = document.getElementById('motivation-banner');
+const motivationText = document.getElementById('motivation-text');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+const motivationPhrases = [
+  'Sən bacarırsan! 🎀',
+  'Bir addım da qaldı, davam et!',
+  'Hər dəqiqə sənin gələcəyinə işləyir 🌸',
+  'Yorulsan da, dayanma — bacarırsan!',
+  'Bu gün özünə görə fəxr edəcəksən 💜',
+  'Kiçik addımlar böyük nəticələr yaradır'
+];
+
+let wakeLock = null;
+
+function showRandomMotivation() {
+  const random = motivationPhrases[Math.floor(Math.random() * motivationPhrases.length)];
+  motivationText.textContent = random;
+}
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch (e) {
+    console.warn('Wake Lock alınmadı:', e);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock) {
+    wakeLock.release();
+    wakeLock = null;
+  }
+}
+
+const fsIconExpand = document.getElementById('fs-icon-expand');
+const fsIconCollapse = document.getElementById('fs-icon-collapse');
+
+fullscreenBtn.addEventListener('click', () => {
+  const timerSection = document.getElementById('timer');
+  if (!document.fullscreenElement) {
+    if (timerSection.requestFullscreen) {
+      timerSection.requestFullscreen();
+    }
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement) {
+    document.body.classList.add('timer-fullscreen-mode');
+    fsIconExpand.classList.add('hidden');
+    fsIconCollapse.classList.remove('hidden');
+  } else {
+    document.body.classList.remove('timer-fullscreen-mode');
+    fsIconExpand.classList.remove('hidden');
+    fsIconCollapse.classList.add('hidden');
+  }
+});
+
+// Timer başlayanda: motivasiya lentini göstər, wake lock al, tam ekran düyməsini göstər
+const originalStartHandler = startBtn.onclick;
+startBtn.addEventListener('click', () => {
+  if (!subjectInput.value.trim()) return; // eyni yoxlama, boşdursa heç nə etmə
+  motivationBanner.classList.remove('hidden');
+  fullscreenBtn.classList.remove('hidden');
+  showRandomMotivation();
+  requestWakeLock();
+
+  // motivasiya mətnini hər 12 saniyədən bir dəyiş
+  clearInterval(window._motivationInterval);
+  window._motivationInterval = setInterval(showRandomMotivation, 12000);
+});
+
+// Fasilə/Dayandır/Sessiya bitəndə: lenti gizlət, wake lock buraxsın, tam ekrandan çıx
+function exitFullscreenAndCleanup() {
+  motivationBanner.classList.add('hidden');
+  fullscreenBtn.classList.add('hidden');
+  clearInterval(window._motivationInterval);
+  releaseWakeLock();
+  document.body.classList.remove('timer-fullscreen-mode');
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+}
+
+pauseBtn.addEventListener('click', () => {
+  releaseWakeLock();
+});
+
+stopBtn.addEventListener('click', () => {
+  exitFullscreenAndCleanup();
+});
+
+// finishSession avtomatik (hədəfə çatanda) da çağırılır — ora da body-fullscreen təmizləməsini bağlayaq
+const originalFinishSession = finishSession;
+finishSession = function(reachedTarget) {
+  originalFinishSession(reachedTarget);
+  exitFullscreenAndCleanup();
+};

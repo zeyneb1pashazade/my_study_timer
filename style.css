@@ -257,3 +257,114 @@ body {
   font-weight: 700;
   cursor: pointer;
 }
+
+/* Motivasiya lenti */
+#motivation-banner {
+  overflow: hidden;
+  background: linear-gradient(90deg, #ffe0ef, #f0dcfa);
+  border-radius: 999px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+}
+
+#motivation-track {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  width: max-content;
+  animation: scroll-left 12s linear infinite;
+  font-weight: 700;
+  color: #a06bc7;
+  padding-left: 100%;
+}
+
+.motivation-cat {
+  font-size: 18px;
+}
+
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-150%); }
+}
+
+/* Tam ekran düyməsi — kiçik dairəvi ikon */
+#fullscreen-btn {
+  position: static;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: #b57ec9;
+  border: 2px solid #f0c9e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+#fullscreen-btn:hover {
+  background: #fce3ee;
+}
+
+/* Tam ekran rejimində timer görünüşü */
+body.timer-fullscreen-mode .tab-nav,
+body.timer-fullscreen-mode .app-header,
+body.timer-fullscreen-mode .timer-setup {
+  display: none;
+}
+
+body.timer-fullscreen-mode .tab-content-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+body.timer-fullscreen-mode .tab-content {
+  border-radius: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(160deg, #fdeef7 0%, #f6e8fb 45%, #fdf0e6 100%);
+}
+
+body.timer-fullscreen-mode #motivation-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+  margin: 0;
+  z-index: 10;
+}
+
+body.timer-fullscreen-mode #timer h2 {
+  display: none;
+}
+
+body.timer-fullscreen-mode #timer-display {
+  font-size: clamp(80px, 18vw, 180px);
+  margin-bottom: 28px;
+}
+
+body.timer-fullscreen-mode .timer-display-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+body.timer-fullscreen-mode #fullscreen-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 50;
+  opacity: 0.7;
+}
+
+body.timer-fullscreen-mode #fullscreen-btn:hover {
+  opacity: 1;
+}
+
