@@ -569,3 +569,107 @@ nextMonthBtn.addEventListener('click', () => {
 document.querySelector('[data-tab="calendar"]').addEventListener('click', renderCalendar);
 
 renderCalendar();
+
+// ==== HƏFTƏLİK CƏDVƏL ====
+
+let weekViewDate = new Date(); // bu tarixin olduğu həftə göstərilir
+
+const weekRangeLabel = document.getElementById('week-range-label');
+const weeklyTableHead = document.getElementById('weekly-table-head');
+const weeklyTableBody = document.getElementById('weekly-table-body');
+const prevWeekBtn = document.getElementById('prev-week-btn');
+const nextWeekBtn = document.getElementById('next-week-btn');
+const noWeeklyDataMsg = document.getElementById('no-weekly-data-msg');
+
+const azWeekdayShort = ['B.e', 'Ç.a', 'Ç', 'C.a', 'C', 'Ş', 'B'];
+
+function getWeekDates(date) {
+  const d = new Date(date);
+  let weekday = d.getDay() - 1; // Bazar ertəsi = 0
+  if (weekday < 0) weekday = 6;
+  d.setDate(d.getDate() - weekday); // həftənin Bazar ertəsi gününə qayıt
+
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(d);
+    day.setDate(d.getDate() + i);
+    days.push(day);
+  }
+  return days;
+}
+
+function renderWeeklyTable() {
+  const weekDates = getWeekDates(weekViewDate);
+  const weekKeys = weekDates.map(toDateKey);
+
+  weekRangeLabel.textContent = `${weekDates[0].getDate()} ${azMonthNames[weekDates[0].getMonth()]} — ${weekDates[6].getDate()} ${azMonthNames[weekDates[6].getMonth()]}`;
+
+  const sessions = getSessions().filter(s => weekKeys.includes(s.date));
+
+  // Baş sətir: boş xana + 7 gün
+  weeklyTableHead.innerHTML = '<th>Mövzu</th>' +
+    weekDates.map((d, i) => `<th>${azWeekdayShort[i]}<br>${d.getDate()}</th>`).join('');
+
+  if (sessions.length === 0) {
+    weeklyTableBody.innerHTML = '';
+    noWeeklyDataMsg.classList.remove('hidden');
+    document.getElementById('weekly-table').classList.add('hidden');
+    return;
+  }
+  noWeeklyDataMsg.classList.add('hidden');
+  document.getElementById('weekly-table').classList.remove('hidden');
+
+  // Mövzu -> { dateKey: totalMinutes }
+  const subjectMap = {};
+  sessions.forEach(s => {
+    const subj = s.subject || '(adsız)';
+    if (!subjectMap[subj]) subjectMap[subj] = {};
+    subjectMap[subj][s.date] = (subjectMap[subj][s.date] || 0) + s.minutes;
+  });
+
+  const subjects = Object.keys(subjectMap).sort();
+
+  weeklyTableBody.innerHTML = '';
+  subjects.forEach(subject => {
+    const row = document.createElement('tr');
+    let rowHtml = `<td>${escapeHtml(subject)}</td>`;
+    weekKeys.forEach(key => {
+      const mins = subjectMap[subject][key];
+      if (mins) {
+        rowHtml += `<td class="has-time">${formatMinutesAsHours(mins)}</td>`;
+      } else {
+        rowHtml += `<td>-</td>`;
+      }
+    });
+    row.innerHTML = rowHtml;
+    weeklyTableBody.appendChild(row);
+  });
+
+  // Cəmi sətri
+  const totalRow = document.createElement('tr');
+  let totalHtml = '<td>Cəmi</td>';
+  weekKeys.forEach(key => {
+    const dayTotal = sessions
+      .filter(s => s.date === key)
+      .reduce((sum, s) => sum + s.minutes, 0);
+    totalHtml += `<td>${dayTotal > 0 ? formatMinutesAsHours(dayTotal) : '-'}</td>`;
+  });
+  totalRow.innerHTML = totalHtml;
+  totalRow.style.borderTop = '2px solid #f0c9e0';
+  totalRow.style.fontWeight = '700';
+  weeklyTableBody.appendChild(totalRow);
+}
+
+prevWeekBtn.addEventListener('click', () => {
+  weekViewDate.setDate(weekViewDate.getDate() - 7);
+  renderWeeklyTable();
+});
+
+nextWeekBtn.addEventListener('click', () => {
+  weekViewDate.setDate(weekViewDate.getDate() + 7);
+  renderWeeklyTable();
+});
+
+document.querySelector('[data-tab="weekly"]').addEventListener('click', renderWeeklyTable);
+
+renderWeeklyTable();

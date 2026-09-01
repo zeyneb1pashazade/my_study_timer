@@ -144,7 +144,23 @@
 
     <section id="weekly" class="tab-content">
       <h2>Həftəlik cədvəl</h2>
-      <p>Həftəlik cədvəl buraya gələcək.</p>
+
+      <div class="calendar-nav">
+        <button id="prev-week-btn">←</button>
+        <span id="week-range-label"></span>
+        <button id="next-week-btn">→</button>
+      </div>
+
+      <div class="table-scroll">
+        <table id="weekly-table">
+          <thead>
+            <tr id="weekly-table-head"></tr>
+          </thead>
+          <tbody id="weekly-table-body"></tbody>
+        </table>
+      </div>
+
+      <p id="no-weekly-data-msg" class="empty-msg hidden">Bu həftə hələ heç bir sessiya qeydə alınmayıb.</p>
     </section>
 
     <section id="blocks" class="tab-content">
