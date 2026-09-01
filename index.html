@@ -131,7 +131,17 @@
 
     <section id="blocks" class="tab-content">
       <h2>Bloklar</h2>
-      <p>Bloklar siyahısı buraya gələcək.</p>
+
+      <div class="block-create-row">
+        <input type="text" id="new-block-name" placeholder="Yeni blok adı (məs: Web Security)">
+        <button id="add-block-btn">Əlavə et</button>
+      </div>
+
+      <div id="blocks-list" class="blocks-grid">
+        <!-- Blok kartları JS ilə buraya əlavə olunacaq -->
+      </div>
+
+      <p id="no-blocks-msg" class="empty-msg hidden">Heç bir blok yaradılmayıb.</p>
     </section>
 
   </main>

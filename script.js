@@ -358,3 +358,117 @@ finishSession = function(reachedTarget) {
   originalFinishSession(reachedTarget);
   exitFullscreenAndCleanup();
 };
+
+// ==== BLOKLAR (CRUD) ====
+
+const newBlockNameInput = document.getElementById('new-block-name');
+const addBlockBtn = document.getElementById('add-block-btn');
+const blocksList = document.getElementById('blocks-list');
+const noBlocksMsg = document.getElementById('no-blocks-msg');
+
+function getBlocks() {
+  return JSON.parse(localStorage.getItem('blocks') || '[]');
+}
+
+function saveBlocks(blocks) {
+  localStorage.setItem('blocks', JSON.stringify(blocks));
+}
+
+function getSessions() {
+  return JSON.parse(localStorage.getItem('sessions') || '[]');
+}
+
+function getBlockTotalMinutes(blockId) {
+  const sessions = getSessions();
+  return sessions
+    .filter(s => s.blockId === blockId)
+    .reduce((sum, s) => sum + s.minutes, 0);
+}
+
+function formatMinutesAsHours(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const mins = totalMinutes % 60;
+  if (hours === 0) return `${mins} dəq`;
+  if (mins === 0) return `${hours} saat`;
+  return `${hours} saat ${mins} dəq`;
+}
+
+function renderBlocks() {
+  const blocks = getBlocks();
+  blocksList.innerHTML = '';
+
+  if (blocks.length === 0) {
+    noBlocksMsg.classList.remove('hidden');
+  } else {
+    noBlocksMsg.classList.add('hidden');
+  }
+
+  blocks.forEach(block => {
+    const totalMinutes = getBlockTotalMinutes(block.id);
+
+    const card = document.createElement('div');
+    card.className = 'block-card';
+    card.innerHTML = `
+      <button class="block-delete-btn" data-id="${block.id}" title="Sil">✕</button>
+      <div class="block-name">${escapeHtml(block.name)}</div>
+      <div class="block-hours">${formatMinutesAsHours(totalMinutes)}</div>
+    `;
+    blocksList.appendChild(card);
+  });
+
+  // Silmə düymələri
+  document.querySelectorAll('.block-delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      if (confirm('Bu bloku silmək istədiyinə əminsən? Bu bloka aid keçmiş sessiyalar silinməyəcək, sadəcə blok siyahıdan çıxacaq.')) {
+        const updated = getBlocks().filter(b => b.id !== id);
+        saveBlocks(updated);
+        renderBlocks();
+        refreshBlockDropdown(); // Mərhələ 5-də əlavə olunacaq funksiya üçün hazırlıq
+      }
+    });
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+addBlockBtn.addEventListener('click', () => {
+  const name = newBlockNameInput.value.trim();
+  if (!name) {
+    alert('Zəhmət olmasa blok adı daxil et.');
+    return;
+  }
+
+  const blocks = getBlocks();
+  const newBlock = {
+    id: Date.now().toString(),
+    name: name,
+    createdAt: new Date().toISOString()
+  };
+  blocks.push(newBlock);
+  saveBlocks(blocks);
+
+  newBlockNameInput.value = '';
+  renderBlocks();
+  refreshBlockDropdown();
+});
+
+// Enter düyməsi ilə də əlavə etmək mümkün olsun
+newBlockNameInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    addBlockBtn.click();
+  }
+});
+
+// Bloklar tab-ı açılanda siyahını yenilə
+document.querySelector('[data-tab="blocks"]').addEventListener('click', renderBlocks);
+
+// Sadə boş funksiya — Mərhələ 5-də real məzmunla dolduracağıq
+function refreshBlockDropdown() {}
+
+renderBlocks();
