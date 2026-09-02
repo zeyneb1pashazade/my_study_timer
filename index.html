@@ -7,36 +7,231 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&family=Quicksand:wght@400..700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <header class="app-header">
     <svg class="mascot" viewBox="0 0 120 100" width="70" height="60">
-      <path d="M 100 70 Q 118 65 116 50 Q 115 62 100 62 Z" fill="#f7e4c9" stroke="#7a5c46" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 20 60
-               Q 20 30 40 22
-               Q 45 8 55 20
-               Q 60 10 65 20
-               Q 78 10 80 24
-               Q 100 32 100 60
-               Q 100 85 60 85
-               Q 20 85 20 60 Z"
-            fill="#f7e4c9" stroke="#7a5c46" stroke-width="3" stroke-linejoin="round"/>
-      <line x1="6" y1="46" x2="26" y2="48" stroke="#7a5c46" stroke-width="1.5"/>
-      <line x1="6" y1="53" x2="26" y2="53" stroke="#7a5c46" stroke-width="1.5"/>
-      <line x1="88" y1="48" x2="108" y2="46" stroke="#7a5c46" stroke-width="1.5"/>
-      <line x1="88" y1="53" x2="108" y2="53" stroke="#7a5c46" stroke-width="1.5"/>
-      <path d="M 40 48 Q 44 44 48 48" fill="none" stroke="#4a3628" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M 66 48 Q 70 44 74 48" fill="none" stroke="#4a3628" stroke-width="2.5" stroke-linecap="round"/>
-      <ellipse cx="57" cy="55" rx="3" ry="2.2" fill="#e8a4b8"/>
-      <path d="M 32 82 Q 34 76 38 82" fill="none" stroke="#7a5c46" stroke-width="2"/>
-      <path d="M 46 84 Q 48 78 52 84" fill="none" stroke="#7a5c46" stroke-width="2"/>
-      <path d="M 62 84 Q 64 78 68 84" fill="none" stroke="#7a5c46" stroke-width="2"/>
-      <path d="M 76 82 Q 78 76 82 82" fill="none" stroke="#7a5c46" stroke-width="2"/>
-      <path d="M 78 18 L 88 12 L 88 24 Z" fill="#f7b8d0" stroke="#7a5c46" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M 78 18 L 68 12 L 68 24 Z" fill="#f7b8d0" stroke="#7a5c46" stroke-width="2" stroke-linejoin="round"/>
-      <circle cx="78" cy="18" r="3" fill="#e8a4b8" stroke="#7a5c46" stroke-width="1.5"/>
+
+      <!-- TAIL -->
+      <path d="
+        M 94 79
+        Q 105 77 112 81
+        Q 118 84 116 89
+        Q 114 94 106 94
+        Q 98 94 91 89
+        L 87 84 Z"
+        fill="#f7e4c9"
+        stroke="#7a5c46"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+      <!-- BODY + SMALL CAT EARS -->
+      <path d="
+        M 20 65
+        Q 19 51 23 40
+        L 28 22
+        Q 30 13 36 10
+        Q 42 8 46 15
+        L 51 24
+        L 69 24
+        L 75 15
+        Q 79 8 85 10
+        Q 91 12 93 22
+        L 98 40
+        Q 104 52 104 65
+        Q 104 88 87 90
+        L 37 90
+        Q 20 87 20 65 Z"
+        fill="#f7e4c9"
+        stroke="#7a5c46"
+        stroke-width="3"
+        stroke-linejoin="round"
+        stroke-linecap="round"/>
+
+      <!-- INNER EARS -->
+      <path d="
+        M 31 21
+        Q 34 14 39 14
+        Q 43 15 46 22
+        L 42 24
+        L 34 24 Z"
+        fill="#f5c7d8"/>
+
+      <path d="
+        M 76 22
+        Q 80 14 84 14
+        Q 89 15 91 22
+        L 88 24
+        L 79 24 Z"
+        fill="#f5c7d8"/>
+
+      <!-- LEFT WHISKERS -->
+      <line x1="23" y1="39" x2="7" y2="36"
+            stroke="#7a5c46"
+            stroke-width="1.5"
+            stroke-linecap="round"/>
+
+      <line x1="22" y1="46" x2="5" y2="46"
+            stroke="#7a5c46"
+            stroke-width="1.5"
+            stroke-linecap="round"/>
+
+      <!-- RIGHT WHISKERS -->
+      <line x1="99" y1="39" x2="114" y2="36"
+            stroke="#7a5c46"
+            stroke-width="1.5"
+            stroke-linecap="round"/>
+
+      <line x1="100" y1="46" x2="116" y2="46"
+            stroke="#7a5c46"
+            stroke-width="1.5"
+            stroke-linecap="round"/>
+
+      <!-- CHEEK STRIPES -->
+      <ellipse cx="96" cy="55"
+              rx="7" ry="3.5"
+              transform="rotate(-18 96 55)"
+              fill="#f2c68d"/>
+
+      <ellipse cx="98" cy="64"
+              rx="7" ry="3.5"
+              transform="rotate(-18 98 64)"
+              fill="#f2c68d"/>
+
+
+      <!-- SMALLER, ROUNDER GLASSES -->
+
+      <!-- LEFT GLASS -->
+      <path d="
+        M 25 31
+        Q 25 29 28 29
+        L 48 29
+        Q 52 29 52 34
+        L 52 43
+        Q 52 48 47 49
+        L 31 49
+        Q 25 48 25 43
+        Z"
+        fill="#f7e4c9"
+        stroke="#7a5c46"
+        stroke-width="2.7"
+        stroke-linejoin="round"/>
+
+      <!-- RIGHT GLASS -->
+      <path d="
+        M 59 34
+        Q 59 29 63 29
+        L 83 29
+        Q 86 29 86 31
+        L 86 43
+        Q 86 48 80 49
+        L 64 49
+        Q 59 48 59 43
+        Z"
+        fill="#f7e4c9"
+        stroke="#7a5c46"
+        stroke-width="2.7"
+        stroke-linejoin="round"/>
+
+      <!-- GLASSES BRIDGE -->
+      <path d="
+        M 52 35
+        Q 55.5 32 59 35"
+        fill="none"
+        stroke="#7a5c46"
+        stroke-width="2.7"
+        stroke-linecap="round"/>
+
+
+      <!-- EYES -->
+      <circle cx="38.5" cy="39"
+              r="3.2"
+              fill="#7a4d3c"/>
+
+      <circle cx="72.5" cy="39"
+              r="3.2"
+              fill="#7a4d3c"/>
+
+
+      <!-- NOSE -->
+      <path d="
+        M 53 44
+        Q 55 42 57 44
+        Q 56 47 55 47
+        Q 53 47 53 44 Z"
+        fill="#e8a4b8"/>
+
+
+      <!-- HAPPY SMILE -->
+      <path d="
+        M 55 47
+        Q 55 50 52 51
+        Q 55 54 58 51
+        Q 55 50 55 47"
+        fill="none"
+        stroke="#7a5c46"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+
+
+      <!-- TWO PAWS -->
+
+      <!-- LEFT PAW -->
+      <path d="M 32 90 Q 32 82 40 82 Q 48 82 48 90 Z"
+            fill="#f7e4c9" stroke="#7a5c46" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="37" y1="90" x2="37" y2="84" stroke="#7a5c46" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="43" y1="90" x2="43" y2="84" stroke="#7a5c46" stroke-width="1.3" stroke-linecap="round"/>
+
+      <!-- RIGHT PAW -->
+      <path d="M 61 90 Q 61 82 69 82 Q 77 82 77 90 Z"
+            fill="#f7e4c9" stroke="#7a5c46" stroke-width="2.5" stroke-linejoin="round"/>
+      <line x1="66" y1="90" x2="66" y2="84" stroke="#7a5c46" stroke-width="1.3" stroke-linecap="round"/>
+      <line x1="72" y1="90" x2="72" y2="84" stroke="#7a5c46" stroke-width="1.3" stroke-linecap="round"/>
+
+
+      <!-- PINK BOW -->
+      <g transform="translate(87 19)">
+
+        <!-- LEFT BOW -->
+        <path d="
+          M 0 4
+          Q -9 -3 -12 3
+          Q -13 10 -7 12
+          Q -2 12 3 7 Z"
+          fill="#f3b6d0"
+          stroke="#7a5c46"
+          stroke-width="2.5"
+          stroke-linejoin="round"/>
+
+        <!-- RIGHT BOW -->
+        <path d="
+          M 5 4
+          Q 14 -3 17 3
+          Q 18 10 12 12
+          Q 7 12 3 7 Z"
+          fill="#f3b6d0"
+          stroke="#7a5c46"
+          stroke-width="2.5"
+          stroke-linejoin="round"/>
+
+        <!-- BOW CENTER -->
+        <circle cx="4" cy="6"
+                r="3.5"
+                fill="#e8a4b8"
+                stroke="#7a5c46"
+                stroke-width="1.8"/>
+
+      </g>
+
     </svg>
     <h1>Oxu Timer</h1>
   </header>
@@ -95,6 +290,11 @@
             <button id="start-btn">Başlat</button>
             <button id="pause-btn" class="hidden">Fasilə</button>
             <button id="stop-btn" class="hidden">Dayandır</button>
+            <button id="resume-without-break-btn" class="hidden" title="Fasiləsiz davam et">
+              <svg viewBox="0 0 24 24" width="18" height="18">
+                <path d="M5 5 L19 19 M19 5 L5 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
             <button id="fullscreen-btn" class="hidden" title="Tam ekran">
               <svg id="fs-icon-expand" viewBox="0 0 24 24" width="18" height="18">
                 <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -104,15 +304,14 @@
               </svg>
             </button>
           </div>
-
         <div id="break-panel" class="hidden">
           <p class="break-label">Fasilə neçə dəqiqə olsun?</p>
           <div class="break-options">
             <button class="break-option-btn" data-mins="5">5 dəq</button>
             <button class="break-option-btn" data-mins="10">10 dəq</button>
             <button class="break-option-btn" data-mins="15">15 dəq</button>
-            <input type="number" id="custom-break-input" min="1" placeholder="Daxil et">
-            <button id="custom-break-btn">Başlat</button>
+          <input type="number" id="custom-break-input" min="1" placeholder="Öz vaxtın">
+          <button id="custom-break-btn">Başlat</button>
           </div>
         </div>
 
@@ -175,29 +374,29 @@
         <!-- Blok kartları JS ilə buraya əlavə olunacaq -->
       </div>
 
-    <p id="no-blocks-msg" class="empty-msg hidden">Hələ heç bir blok yaratmamısan.</p>
-    </section>
+  <p id="no-blocks-msg" class="empty-msg hidden">Hələ heç bir blok yaratmamısan.</p>
+  </section>
 
-    <div id="block-modal-overlay" class="modal-overlay hidden">
-      <div class="modal-box">
-        <button id="close-block-modal-btn" class="modal-close-btn">✕</button>
-        <h3 id="block-modal-title"></h3>
+  <div id="block-modal-overlay" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button id="close-block-modal-btn" class="modal-close-btn">✕</button>
+      <h3 id="block-modal-title"></h3>
 
-        <div class="calendar-nav">
-          <button id="block-prev-month-btn">←</button>
-          <span id="block-calendar-month-label"></span>
-          <button id="block-next-month-btn">→</button>
-        </div>
-
-        <div class="calendar-weekdays">
-          <span>B.e</span><span>Ç.a</span><span>Ç</span><span>C.a</span><span>C</span><span>Ş</span><span>B</span>
-        </div>
-
-        <div id="block-calendar-grid" class="calendar-grid"></div>
-
-        <p id="block-modal-total"></p>
+      <div class="calendar-nav">
+        <button id="block-prev-month-btn">←</button>
+        <span id="block-calendar-month-label"></span>
+        <button id="block-next-month-btn">→</button>
       </div>
+
+      <div class="calendar-weekdays">
+        <span>B.e</span><span>Ç.a</span><span>Ç</span><span>C.a</span><span>C</span><span>Ş</span><span>B</span>
+      </div>
+
+      <div id="block-calendar-grid" class="calendar-grid"></div>
+
+      <p id="block-modal-total"></p>
     </div>
+  </div>
 
   </main>
 

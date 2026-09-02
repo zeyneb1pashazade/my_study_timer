@@ -103,6 +103,10 @@ startBtn.addEventListener('click', () => {
   blockSelect.disabled = true;
   savedMsg.classList.add('hidden');
 
+  beginTicking();
+});
+
+function beginTicking() {
   timerInterval = setInterval(() => {
     if (currentMode === 'countup') {
       elapsedSeconds++;
@@ -117,7 +121,7 @@ startBtn.addEventListener('click', () => {
     }
     updateDisplay();
   }, 1000);
-});
+}
 
 pauseBtn.addEventListener('click', () => {
   clearInterval(timerInterval);
@@ -125,6 +129,7 @@ pauseBtn.addEventListener('click', () => {
   pauseBtn.classList.add('hidden');
   stopBtn.classList.add('hidden');
   breakPanel.classList.remove('hidden');
+  resumeWithoutBreakBtn.classList.remove('hidden');
 });
 
 breakOptionButtons.forEach(btn => {
@@ -145,6 +150,7 @@ customBreakBtn.addEventListener('click', () => {
 
 function startBreak(minutes) {
   breakPanel.classList.add('hidden');
+  resumeWithoutBreakBtn.classList.add('hidden');
   breakActiveWrap.classList.remove('hidden');
   breakRemainingSeconds = minutes * 60;
   breakDisplay.textContent = formatTime(breakRemainingSeconds);
@@ -189,7 +195,7 @@ function finishSession(reachedTarget) {
     savedMsg.classList.remove('hidden');
   }
 
-  if (reachedTarget) {
+  if (minutesSpent > 0) {
     playChime('celebrate');
   }
 
@@ -336,6 +342,7 @@ startBtn.addEventListener('click', () => {
 function exitFullscreenAndCleanup() {
   motivationBanner.classList.add('hidden');
   fullscreenBtn.classList.add('hidden');
+  resumeWithoutBreakBtn.classList.add('hidden');
   clearInterval(window._motivationInterval);
   releaseWakeLock();
   document.body.classList.remove('timer-fullscreen-mode');
@@ -646,7 +653,7 @@ function renderWeeklyTable() {
       if (mins) {
         rowHtml += `<td class="has-time">${formatMinutesAsHours(mins)}</td>`;
       } else {
-        rowHtml += `<td>-</td>`;
+        rowHtml += `<td></td>`;
       }
     });
     row.innerHTML = rowHtml;
@@ -660,7 +667,7 @@ function renderWeeklyTable() {
     const dayTotal = sessions
       .filter(s => s.date === key)
       .reduce((sum, s) => sum + s.minutes, 0);
-    totalHtml += `<td>${dayTotal > 0 ? formatMinutesAsHours(dayTotal) : '-'}</td>`;
+    totalHtml += `<td>${dayTotal > 0 ? formatMinutesAsHours(dayTotal) : ''}</td>`;
   });
   totalRow.innerHTML = totalHtml;
   totalRow.style.borderTop = '2px solid #f0c9e0';
@@ -775,3 +782,39 @@ blockNextMonthBtn.addEventListener('click', () => {
   blockModalViewDate.setMonth(blockModalViewDate.getMonth() + 1);
   renderBlockModalCalendar();
 });
+
+// ==== FASİLƏSİZ DAVAM ET ====
+
+const resumeWithoutBreakBtn = document.getElementById('resume-without-break-btn');
+
+resumeWithoutBreakBtn.addEventListener('click', () => {
+  breakPanel.classList.add('hidden');
+  resumeWithoutBreakBtn.classList.add('hidden');
+  pauseBtn.classList.remove('hidden');
+  stopBtn.classList.remove('hidden');
+  requestWakeLock();
+  beginTicking();
+});
+
+// ==== DÜYMƏ KLİK SƏSİ ====
+
+function playClickSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    const now = ctx.currentTime;
+    osc.frequency.setValueAtTime(420, now);
+    osc.frequency.exponentialRampToValueAtTime(650, now + 0.06);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.12, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.11);
+  } catch (e) {
+    console.warn('Klik səsi çalınmadı:', e);
+  }
+}
